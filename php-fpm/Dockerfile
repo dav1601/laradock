@@ -72,7 +72,14 @@ RUN set -xe; \
 # Example:
 #   - INSTALL_SOAP=true
 #
+###########################################################################
+# youtube dl:
+###########################################################################
+USER root
 
+RUN apt-get update \
+  && apt-get install -y python3-pip \
+  && python3 -m pip install -U --pre yt-dlp --break-system-packages
 ###########################################################################
 # BZ2:
 ###########################################################################
@@ -108,6 +115,9 @@ RUN if [ ${INSTALL_GMP} = true ]; then \
     ;fi && \
     docker-php-ext-install gmp \
 ;fi
+###########################################################################
+# YOUTUBE DL:
+###########################################################################
 
 ###########################################################################
 # GnuPG:
@@ -150,6 +160,7 @@ ARG INSTALL_FAKETIME=false
 RUN if [ ${INSTALL_FAKETIME} = true ]; then \
     apt-get install -yqq libfaketime \
 ;fi
+
 
 ###########################################################################
 # SOAP:
@@ -1227,8 +1238,8 @@ ARG NEW_RELIC=${NEW_RELIC}
 ARG NEW_RELIC_KEY=${NEW_RELIC_KEY}
 ARG NEW_RELIC_APP_NAME=${NEW_RELIC_APP_NAME}
 
-RUN if [ ${NEW_RELIC} = true ] && [ ${LARADOCK_PHP_VERSION} != "8.3" ]; then \
-  curl -L http://download.newrelic.com/php_agent/archive/10.14.0.3/newrelic-php5-10.14.0.3-linux.tar.gz | tar -C /tmp -zx && \
+RUN if [ ${NEW_RELIC} = true ]; then \
+  curl -L http://download.newrelic.com/php_agent/archive/10.13.0.2/newrelic-php5-10.13.0.2-linux.tar.gz | tar -C /tmp -zx && \
   export NR_INSTALL_USE_CP_NOT_LN=1 && \
   export NR_INSTALL_SILENT=1 && \
   /tmp/newrelic-php5-*/newrelic-install install && \
@@ -1267,20 +1278,6 @@ RUN set -xe; \
     && rm /tmp/ssdb-client-php.tar.gz \
     && docker-php-ext-enable ssdb \
 ;fi
-
-###########################################################################
-# Legacy Openssl Config:
-###########################################################################
-ARG LEGACY_OPENSSL=false
-
-RUN if [ ${LEGACY_OPENSSL} = true ]; then \
-  if openssl version | grep -q "OpenSSL 3"; then \
-    sed -i 's/# providers = provider_sect/providers = provider_sect/g' /etc/ssl/openssl.cnf && \
-    sed -i '$a[provider_sect]\ndefault=default_sect\nlegacy=legacy_sect\n' /etc/ssl/openssl.cnf && \
-    sed -i '$a[default_sect]\nactivate=1\n[legacy_sect]\nactivate=1\n' /etc/ssl/openssl.cnf \
-  ;fi \
-;fi
-
 ###########################################################################
 # Downgrade Openssl:
 ###########################################################################
