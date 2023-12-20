@@ -1150,8 +1150,8 @@ services:
         - ./data/certbot/certs/:/var/certs
         - ./certbot/letsencrypt/:/var/www/letsencrypt
       environment:
-        - CN="fake.domain.com"
-        - EMAIL="fake.email@gmail.com"
+        - CN=dvanhsound.local
+        - EMAIL=vaone6v2@gmail.com
       networks:
         - frontend
 
