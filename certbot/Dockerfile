@@ -6,5 +6,8 @@ COPY run-certbot.sh /root/certbot/run-certbot.sh
 
 RUN apt-get update
 RUN apt-get install -y letsencrypt
+USER root
+COPY ./crontab /etc/cron.d
+RUN chmod -R 644 /etc/cron.d
 
 ENTRYPOINT bash -c "bash /root/certbot/run-certbot.sh && sleep infinity"
