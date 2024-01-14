@@ -457,9 +457,11 @@ services:
       frontend:
           aliases:
             - dvanhtalk.test
+            - dvanhsound.local
       backend:
           aliases:
             - dvanhtalk.test
+            - dvanhsound.local
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -1336,7 +1338,21 @@ services:
     networks:
       - frontend
       - backend
-
+ ### Laravel Echo Server dvs #######################################
+  laravel-echo-server-dvs:
+    build:
+      context: ./laravel-echo-server-dvs
+      args:
+        - CHANGE_SOURCE=${CHANGE_SOURCE}
+    volumes:
+      - ./laravel-echo-server-dvs/laravel-echo-server.json:/app/laravel-echo-server.json:ro
+    ports:
+      - "${LARAVEL_ECHO_SERVER_DVS_PORT}:6002"
+    links:
+      - redis
+    networks:
+      - frontend
+      - backend
   ### Solr ################################################
   solr:
     build:
