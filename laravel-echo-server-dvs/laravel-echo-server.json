@@ -26,8 +26,8 @@
   },
   "apiOriginAllow": {
     "allowCors": false,
-    "allowOrigin": "http://dvanhsound.local",
-    "allowMethods": "*",
-    "allowHeaders": "*"
+    "allowOrigin": "",
+    "allowMethods": "",
+    "allowHeaders": ""
   }
 }
